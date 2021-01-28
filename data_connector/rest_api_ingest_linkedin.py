@@ -362,7 +362,7 @@ def _with_query_params(api: Dict, initial_params: Dict, base_uri: str) -> str:
 
 
 async def _process_api_with_timestamp(api: Dict, access_token: str, base_uri: str,
-                                      all_dates: List[Tuple[datetime, datetime]], date_format: str,
+                                      default_start_date: datetime,default_end_date: datetime, date_format: str,
                                       start_date_query_key: str, end_date_query_key: str,
                                       next_page_func: Callable) -> list:
     """
@@ -379,48 +379,49 @@ async def _process_api_with_timestamp(api: Dict, access_token: str, base_uri: st
 
     collected = []
 
-    for start, end in all_dates:
 
-        start_norm = start.strftime(date_format)
+    #for start, end in all_dates:
 
-        end_norm = end.strftime(date_format)
+    start_norm = default_start_date.strftime(date_format)
 
-        path_param = _set_time_param(start_date_query_key, end_date_query_key, start_norm, end_norm)
-        
-        start_day=start.day
-        start_month=start.month
-        start_year=start.year
-        end_day=end.day
-        end_month=end.month
-        end_year=end.year
+    end_norm = default_end_date.strftime(date_format)
+    # path_param = _set_time_param(start_date_query_key, end_date_query_key, start_norm, end_norm)
 
-        full_url_1 = _with_query_params(api, {}, base_uri)
-        modified_url="dateRange.start.day="+str(start_day)+"&dateRange.start.month="+str(start_month)+"&dateRange.start.year="+str(start_year)+"&dateRange.end.day="+str(end_day)+"&dateRange.end.month="+str(end_month)+"&dateRange.end.year="+str(end_year)
-        full_url=re.sub(r"dateRange.start.day=start_day&dateRange.start.month=start_month&dateRange.start.year=start_year&dateRange.end.day=end_day&dateRange.end.month=end_month&dateRange.end.year=end_year",modified_url,full_url_1)
+    start_day=default_start_date.day
+    start_month=default_start_date.month
+    start_year=default_start_date.year
+    end_day=default_end_date.day
+    end_month=default_end_date.month
+    end_year=default_end_date.year
 
-        #full_url = _with_query_params(api, path_param, base_uri)
+    full_url_1 = _with_query_params(api, {}, base_uri)
+    modified_url="dateRange.start.day="+str(start_day)+"&dateRange.start.month="+str(start_month)+"&dateRange.start.year="+str(start_year)+"&dateRange.end.day="+str(end_day)+"&dateRange.end.month="+str(end_month)+"&dateRange.end.year="+str(end_year)
+    full_url=re.sub(r"dateRange.start.day=start_day&dateRange.start.month=start_month&dateRange.start.year=start_year&dateRange.end.day=end_day&dateRange.end.month=end_month&dateRange.end.year=end_year",modified_url,full_url_1)
 
-        extract_func = _get_extract_function(api)
+    #full_url = _with_query_params(api, path_param, base_uri)
 
-        filter_funcs = filter_element.get_filter_function(api)
+    extract_func = _get_extract_function(api)
 
-        data = await fetch_json_to_df(full_url, access_token, filter_funcs, extract_func, next_page_func)
+    filter_funcs = filter_element.get_filter_function(api)
 
-        if data is None:
-            logger.info("Something went wrong with accessing  api: '{}'".format(full_url))
-        elif len(data):
-            fetched_set = {
+    data = await fetch_json_to_df(full_url, access_token, filter_funcs, extract_func, next_page_func)
+
+    if data is None:
+        logger.info("Something went wrong with accessing  api: '{}'".format(full_url))
+    elif len(data):
+        fetched_set = {
                 'start_date': start_norm,
                 'end_date': end_norm,
                 'dataset': data
             }
-            logger.info(
+        logger.info(
                 "Records retrieved between '{}' and '{}' for '{}' = '{}'".format(start_norm, end_norm, name, len(data)))
-            collected.append(fetched_set)
-        else:
-            logger.info("Records retrieved between '{}' and '{}' for '{}' = '{}'".format(start_norm, end_norm, name, 0))
+        collected.append(fetched_set)
+    else:
+        logger.info("Records retrieved between '{}' and '{}' for '{}' = '{}'".format(start_norm, end_norm, name, 0))
 
     return collected
+
 
 
 async def _process_api_without_timestamp(api, access_token, base_uri, next_page_func) -> list:
@@ -443,7 +444,7 @@ async def _process_api_without_timestamp(api, access_token, base_uri, next_page_
     return collected
 
 
-async def _process_api(api: Dict, access_token: str, base_uri: str, all_dates: List[Tuple[datetime, datetime]],
+async def _process_api(api: Dict, access_token: str, base_uri: str, default_start_date: datetime,default_end_date: datetime,
                        app_run_time: str, target_data_path: str, date_format: str,
                        start_date_query_key: str, end_date_query_key: str, next_page_func: Callable) -> None:
     """
@@ -463,7 +464,7 @@ async def _process_api(api: Dict, access_token: str, base_uri: str, all_dates: L
     data = []
 
     if "needTimeStamp" in api and api["needTimeStamp"] is True:
-        data = await _process_api_with_timestamp(api, access_token, base_uri, all_dates, date_format,
+        data = await _process_api_with_timestamp(api, access_token, base_uri,default_start_date,default_end_date, date_format,
                                                  start_date_query_key, end_date_query_key, next_page_func)
     else:
         data = await _process_api_without_timestamp(api, access_token, base_uri, next_page_func)
@@ -724,7 +725,8 @@ async def _process(config: Dict,
                    api: Dict,
                    access_token: str,
                    base_uri: str,
-                   all_dates: List[Tuple[datetime, datetime]],
+                   default_start_date: datetime,
+                   default_end_date: datetime,
                    app_run_time: str,
                    target_data_path: str,
                    start_date_query_key: str,
@@ -749,7 +751,7 @@ async def _process(config: Dict,
     next_page_func = partial(_get_next_page_url, next_page_url_path)
 
     if "parent" not in api:
-        await _process_api(api, access_token, base_uri, all_dates, app_run_time, target_data_path, date_format,
+        await _process_api(api, access_token, base_uri,default_start_date,default_end_date, app_run_time, target_data_path, date_format,
                            start_date_query_key, end_date_query_key,
                            next_page_func)
     else:
@@ -937,7 +939,7 @@ async def main():
         dates = get_dates(api)
 
         start_time = time.time()
-        await _process(config, api,args.access_token, base_uri, dates, app_run_time, target_data_path,
+        await _process(config, api,args.access_token, base_uri, default_start_date,default_end_date, app_run_time, target_data_path,
                        start_date_query_key, end_date_query_key, args.meta_date_format)
         elapsed_time = time.time() - start_time
 
