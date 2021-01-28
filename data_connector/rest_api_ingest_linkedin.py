@@ -17,6 +17,7 @@ import pytz
 import requests
 import requests_async
 import yaml
+import re
 from botocore.exceptions import ClientError
 
 import data_normalizer
@@ -429,8 +430,19 @@ async def _process_api_with_timestamp(api: Dict, access_token: str, base_uri: st
         end_norm = end.strftime(date_format)
 
         path_param = _set_time_param(start_date_query_key, end_date_query_key, start_norm, end_norm)
+        
+        start_day=start.day
+        start_month=start.month
+        start_year=start.year
+        end_day=end.day
+        end_month=end.month
+        end_year=end.year
 
-        full_url = _with_query_params(api, path_param, base_uri)
+        full_url_1 = _with_query_params(api, {}, base_uri)
+        modified_url="dateRange.start.day="+str(start_day)+"&dateRange.start.month="+str(start_month)+"&dateRange.start.year="+str(start_year)+"&dateRange.end.day="+str(end_day)+"&dateRange.end.month="+str(end_month)+"&dateRange.end.year="+str(end_year)
+        full_url=re.sub(r"dateRange.start.day=start_day&dateRange.start.month=start_month&dateRange.start.year=start_year&dateRange.end.day=end_day&dateRange.end.month=end_month&dateRange.end.year=end_year",modified_url,full_url_1)
+
+        #full_url = _with_query_params(api, path_param, base_uri)
 
         extract_func = _get_extract_function(api)
 
