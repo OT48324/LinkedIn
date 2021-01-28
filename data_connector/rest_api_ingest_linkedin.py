@@ -38,14 +38,6 @@ def parse_args():
         description="This process pulls Ny Reg 187 data based on the specified configuration."
     )
     parser.add_argument(
-        "--client-id", required=True,
-        help="Client id of application."
-    )
-    parser.add_argument(
-        "--client-secret", required=True,
-        help="Client secret of application."
-    )
-    parser.add_argument(
         "--access-token", required=True,
         help="Client token of application."
     )
@@ -172,42 +164,6 @@ def get_start_end_dates(start: date, end: date, time_range="7days") -> list:
     find_dates(start)
 
     return collected
-
-
-def get_token(token_uri, client_id, secret, scope) -> str:
-    """
-    Gets a valid bearer token.
-    :param token_uri: token url
-    :param client_id: Client Id
-    :param secret: Client Secret
-    :param scope: Scope of the API Call
-    :return: String token
-    """
-
-    request_body = dict(grant_type="client_credentials",
-                        client_id=client_id,
-                        client_secret=secret,
-                        scope=scope)
-
-    def request():
-        response = requests.post(token_uri, data=request_body,
-                                 headers={"Content-Type": "application/x-www-form-urlencoded"})
-        return response
-
-    resp = request()
-
-    while resp.status_code == HTTPStatus.TOO_MANY_REQUESTS:
-        logger.info("Waiting 5 seconds because 10 API call per limit quota..")
-        time.sleep(5)
-        logger.info("Requesting again..")
-        resp = request()
-
-    if resp.status_code == HTTPStatus.OK:
-        data = resp.json()
-        token = "Bearer " + data["access_token"]
-        return token
-    else:
-        raise RuntimeError("Can not get [Degreed Oauth2 Token],\n Token Service return: {}".format(resp.status_code))
 
 
 async def fetch_json_auth2_async(full_url, access_token) -> Dict:
