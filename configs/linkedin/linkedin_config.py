@@ -28,15 +28,9 @@ data_specs = [
     DataSpec(
         glob_pattern='linkedin_analytics-????-??-??-??-??-??.json',
         destination_dir='linkedin',
-        table_name='linkedin',
-        schema_script='sql/linkedin/linkedin_schema.sql',
-        load_script='sql/linkedin/linkedin_load.sql',
     ),
      DataSpec(
         glob_pattern='linkedin_campaign-????-??-??-??-??-??.json',
         destination_dir='linkedin',
-        table_name='linkedin',
-        schema_script='sql/linkedin/linkedin_schema.sql',
-        load_script='sql/linkedin/linkedin_load.sql',
     )
     ]
