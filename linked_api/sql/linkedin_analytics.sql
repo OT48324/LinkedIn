@@ -1,3 +1,5 @@
+Truncate table edw_staging.linkedin_analytics;
+
 Insert into edw_staging.linkedin_analytics
 select
 cast( __raw__ ['actionClicks']	AS VARCHAR ) AS	actionClicks,
@@ -21,3 +23,5 @@ cast( __raw__ ['sends']	AS VARCHAR ) AS	sends,
 cast( __raw__ ['shares']	AS VARCHAR ) AS	shares,
 cast( __raw__ ['totalEngagements']	AS VARCHAR ) AS	totalEngagements
 FROM edw_staging.linkedin_analytics_stg;
+
+commit;
