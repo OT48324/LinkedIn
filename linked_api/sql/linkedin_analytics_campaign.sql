@@ -1,3 +1,4 @@
+Truncate table edw_staging.linkedin_analytics_campaign;
 
 Insert into edw_staging.linkedin_analytics_campaign
 select 
@@ -32,3 +33,5 @@ run_schedule_start,
 run_schedule_end
 from edw_staging.linkedin_analytics a
 inner join edw_staging.linkedin_campaign b on SUBSTRING(a.campaign_id,26) =b.id ;
+
+commit;
