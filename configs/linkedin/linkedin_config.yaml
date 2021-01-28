@@ -6,6 +6,6 @@ startDateQueryKey: filter[start_date]
 endDateQueryKey: filter[end_date]
 apis:
   - name: MMM API_Test (Shan's Test Demo)
-    path: v2/adAnalyticsV2?q=analytics&pivot=CAMPAIGN&dateRange.start.day=1&dateRange.start.month=12&dateRange.start.year=2020&timeGranularity=DAILY&companies[0]=urn:li:organization:3631&fields=actionClicks,adUnitClicks,clicks,dateRange,impressions,landingPageClicks,leadGenerationMailInterestedClicks,oneClickLeadFormOpens,oneClickLeads,opens,otherEngagements,sends,follows,likes,shares,totalEngagements,pivotValues,costInUsd
+    path: v2/adAnalyticsV2?q=analytics&pivot=CAMPAIGN&dateRange.start.day=start_day&dateRange.start.month=start_month&dateRange.start.year=start_year&dateRange.end.day=end_day&dateRange.end.month=end_month&dateRange.end.year=end_year&timeGranularity=DAILY&companies[0]=urn:li:organization:3631&fields=actionClicks,adUnitClicks,clicks,dateRange,impressions,landingPageClicks,leadGenerationMailInterestedClicks,oneClickLeadFormOpens,oneClickLeads,opens,otherEngagements,sends,follows,likes,shares,totalEngagements,pivotValues,costInUsd
     #path: v2/adCampaignsV2?q=search
     target: /linkedin-????.json
