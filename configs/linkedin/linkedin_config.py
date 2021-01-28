@@ -27,10 +27,10 @@ DataSpec.__new__.__defaults__ = (
 data_specs = [
     DataSpec(
         glob_pattern='linkedin_analytics-????-??-??-??-??-??.json',
-        destination_dir='linkedin',
+        destination_dir='linkedin_analytics',
     ),
      DataSpec(
         glob_pattern='linkedin_campaign-????-??-??-??-??-??.json',
-        destination_dir='linkedin',
+        destination_dir='linkedin_campaign',
     )
     ]
