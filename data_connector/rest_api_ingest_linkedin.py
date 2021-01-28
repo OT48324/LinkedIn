@@ -21,7 +21,7 @@ from botocore.exceptions import ClientError
 
 #import data_normalizer
 #import data_aggregator
-#import filter_element
+import filter_element
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ffi.rest_api")
