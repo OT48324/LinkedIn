@@ -11,3 +11,4 @@ cast( __raw__[ 'type' ] AS VARCHAR ) AS type,
 cast( __raw__[ 'status' ] AS VARCHAR ) AS status 
 FROM edw_staging.linkedin_campaign_stg where cast( __raw__[ 'id' ] AS VARCHAR ) NOT in 
 (select id from edw_staging.linkedin_campaign) ;
+commit;
