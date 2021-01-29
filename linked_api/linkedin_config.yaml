@@ -1,15 +1,15 @@
-project: linkedin_data_ingestion
+project: MassMutual_Linkedin_API
 baseUri: https://api.linkedin.com/
 tokenUri: https://www.linkedin.com/oauth/v2/accessToken
 targetPath: target
 startDateQueryKey: filter[start_date]
 endDateQueryKey: filter[end_date]
 apis:
-  - name: MMM API_Test (Shan's Test Demo)
+  - name: MassMutual_Linkedin_Analytics_API
     path: v2/adAnalyticsV2?q=analytics&pivot=CAMPAIGN&dateRange.start.day=start_day&dateRange.start.month=start_month&dateRange.start.year=start_year&dateRange.end.day=end_day&dateRange.end.month=end_month&dateRange.end.year=end_year&timeGranularity=DAILY&companies[0]=urn:li:organization:3631&fields=actionClicks,adUnitClicks,clicks,dateRange,impressions,landingPageClicks,leadGenerationMailInterestedClicks,oneClickLeadFormOpens,oneClickLeads,opens,otherEngagements,sends,follows,likes,shares,totalEngagements,pivotValues,costInUsd
     needTimeStamp: true
     target: /linkedin_analytics-????.json
 
-  - name: MMM API_Test
+  - name: MassMutual_Linkedin_Campaign_API
     path: v2/adCampaignsV2?q=search&search.type.values[0]=SPONSORED_UPDATES&search.status.values[0]=ACTIVE&sort.field=ID&sort.order=DESCENDING
     target: /linkedin_campaign-????.json
